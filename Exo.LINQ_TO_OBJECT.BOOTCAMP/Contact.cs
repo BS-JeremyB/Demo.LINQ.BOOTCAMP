@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Demo.LINQ_TO_OBJECT.BOOTCAMP
+namespace Exo.LINQ_TO_OBJECT.BOOTCAMP
 {
     public class Contact
     {

@@ -17,6 +17,14 @@ List<Contact> contacts = new List<Contact> {
     new Contact(){ Nom = "Willis", Prenom = "Bruce", Email = "bruce.willis@diehard.com", AnneeDeNaissance = 1955 },
 };
 
+List<RDV> rendezVous = new List<RDV> {
+    new RDV(){ Email = "stephane. faulkner@cognitic.be", Date = new DateTime(2012,5,12)},
+    new RDV(){ Email = "peppard.george@ateam.com", Date = new DateTime(2011,8,14)},
+    new RDV(){ Email = "bruce.willis@diehard.com", Date = new DateTime(2012,6,19)},
+    new RDV(){ Email = "bruce.willis@diehard.com", Date = new DateTime(2012,6,20)},
+    new RDV(){ Email = "michael.person@cognitic.be", Date = new DateTime(2012,04,19)},
+};
+
 #region Cast OfType
 
 //ArrayList arrayList = new ArrayList();
@@ -131,7 +139,6 @@ List<Contact> contacts = new List<Contact> {
 
 #endregion
 
-
 #region OrderBy
 
 //// expression de requete
@@ -170,133 +177,127 @@ List<Contact> contacts = new List<Contact> {
 //}
 #endregion
 
-#region EXO
+#region Count
 
-//var mixedData = new List<object>
-//{
-//    "Texte aléatoire",
-//    new Contact() { Nom = "Wayne", Prenom = "Bruce", Email = "bruce.wayne@batcave.com", AnneeDeNaissance = 1939 },
-//    12345,
-//    new Contact() { Nom = "Kent", Prenom = "Clark", Email = "clark.kent@dailyplanet.com", AnneeDeNaissance = 1938 }
-//};
+//int nombreContactFiltre = contacts.Count(c => c.AnneeDeNaissance == 1962);
 
-#region 1. Utilisation de Cast<T> et OfType<T>
-////Consigne :
-////Imaginez que vous ayez mélangé des types différents dans une collection générique. Vous devez extraire uniquement les objets de type Contact.
+//Console.WriteLine(nombreContactFiltre);
+#endregion
 
-//IEnumerable<Contact> contactOfType = mixedData.OfType<Contact>();
+#region Min Max
 
-//foreach (Contact contact in contactOfType)
-//{
-//    Console.WriteLine(contact.ToString());
-//}
+//int ageMax = contacts.Max(c => DateTime.Now.Year - c.AnneeDeNaissance);
+
+//Console.WriteLine(ageMax);
+
+//int ageMin = contacts.Min(c => DateTime.Now.Year - c.AnneeDeNaissance);
+
+//Console.WriteLine(ageMin);
 
 #endregion
 
-#region 2. Filtrage avec Where
-////Consigne :
-////Récupérez tous les contacts dont l'adresse email appartient au domaine imdb.com. Affichez le nom complet (nom + prénom).
+#region Group By
+//IEnumerable<IGrouping<string, Contact>> contactsGrouped = contacts.GroupBy(c => c.Email.Substring(c.Email.LastIndexOf(".") + 1));
 
-//var contactAnon = contacts.Where(c => c.Email.EndsWith("imdb.com")).Select(c => new { NomComplet = c.Nom + " " + c.Prenom });
+////IEnumerable<IGrouping<string, Contact>> contactsGrouped = contacts.GroupBy(c => c.Nom);
 
-//foreach (var contact in contactAnon)
+//foreach (IGrouping<string,Contact> item in contactsGrouped)
 //{
-//    Console.WriteLine(contact.NomComplet);
-//}
-
-#endregion
-
-#region 3. Transformation avec Select
-////Consigne :
-////Créez une liste contenant uniquement les prénoms des contacts, en utilisant l’opérateur Select. Affichez ces prénoms.
-
-//var contactAnon = contacts.Select(c => new { c.Prenom });
-
-//foreach (var contact in contactAnon) 
-//{
-//    Console.WriteLine(contact.Prenom);
-//}
-
-#endregion
-
-#region 4. Suppression des doublons avec Distinct
-////Consigne :
-////Certains contacts peuvent avoir le même prénom. Récupérez la liste des prénoms distincts et affichez-les.
-
-//var contactAnon = contacts.Select(c => new { c.Prenom}).Distinct();
-
-//foreach (var contact in contactAnon)
-//{
-//    Console.WriteLine(contact.Prenom);
-//}
-
-#endregion
-
-#region 5. Recherche avec SingleOrDefault
-////Consigne :
-////Trouvez le contact dont le nom est "Moore" et le prénom "Demi". Utilisez SingleOrDefault.
-////Si aucun contact ou plusieurs contacts correspondent, affichez un message d’erreur.
-//try
-//{
-//    Contact contact = contacts.SingleOrDefault(c => c.Nom == "Moore" && c.Prenom == "Demi");
-//    if(contact == null)
-//    {
-//        Console.WriteLine("Le contact n'existe pas !");
-//    }
-//    else
+//    Console.WriteLine($"{item.Key} : {item.Count()}");
+//    foreach(Contact contact in item)
 //    {
 //        Console.WriteLine(contact.ToString());
 //    }
 
-//} catch (Exception ex)
+//    Console.WriteLine("------------------------");
+//}
+
+
+//var ensembleContactsGroupe = contacts
+//                      .Select(c => new { NomComplet = c.Prenom + " " + c.Nom, c.Email })
+//                      .GroupBy(c => c.Email.Substring(c.Email.IndexOf("@") + 1));
+
+//foreach (var groupe in ensembleContactsGroupe)
 //{
-//    Console.WriteLine(ex.Message);
+//    Console.WriteLine($"{groupe.Key} : {groupe.Count()}");
+//    foreach (var contact in groupe)
+//    {
+//        Console.WriteLine($"{contact.NomComplet} - {contact.Email}");
+//    }
 //}
 #endregion
 
-#region 6. Recherche avec FirstOrDefault
-////Consigne :
-////Trouvez le premier contact dont l'année de naissance est antérieure à 1960. Utilisez FirstOrDefault et affichez le nom complet.
+#region Join Group Join
+//var resultJoin = contacts.Join(rendezVous,
+//                               c => new {c.Email, c.Nom}
+//                               rdv => new {rdv.Email, rdv.Nom},
+//                               (c, rdv) => new
+//                               {
+//                                   c.Email,
+//                                   c.Nom,
+//                                   c.Prenom,
+//                                   DateRDV = rdv.Date
 
-////Contact contact = contacts.Where(c => c.AnneeDeNaissance < 1960).FirstOrDefault();
+//                               }).GroupBy(c => c.Email);
 
-//Contact contact = contacts.FirstOrDefault(c => c.AnneeDeNaissance < 1960);
 
-//Console.WriteLine(contact.ToString());
 
-#endregion
-
-#region 7. Tri avec OrderBy et OrderByDescending
-////Consigne :
-////Triez les contacts par année de naissance dans l’ordre croissant en utilisant OrderBy, puis affichez les résultats.
-////Recommencez avec un tri décroissant en utilisant OrderByDescending.
-
-//IEnumerable<Contact> contactsToOrder = contacts.OrderBy(c => c.AnneeDeNaissance);
-
-//foreach (Contact contact in contactsToOrder)
+//foreach (var groupe in resultJoin)
 //{
-//    Console.WriteLine(contact.ToString());
+//    Console.WriteLine($"{groupe.Key} : {groupe.Count()}");
+//    foreach(var contact  in groupe)
+//    {
+//        Console.WriteLine($"Nom Complet : { contact.Nom} {contact.Prenom} - Email : {contact.Email} - Date RDV : {contact.DateRDV}");
+//    }
 //}
 
-//Console.WriteLine("-----------------");
-//IEnumerable<Contact> contactsToOrderDesc = contacts.OrderByDescending(c => c.AnneeDeNaissance);
+//var resultJoin = from c in contacts
+//                 join rdv in rendezVous on c.Email equals rdv.Email
+//                 select new
+//                 {
+//                     c.Email,
+//                     c.Nom,
+//                     c.Prenom,
+//                     DateRDV = rdv.Date
+//                 };
 
-//foreach (Contact contact in contactsToOrderDesc)
+
+//foreach(var contact in resultJoin)
 //{
-//    Console.WriteLine(contact.ToString());
+//    Console.WriteLine($"Nom Complet : {contact.Nom} {contact.Prenom} - Email : {contact.Email} - Date RDV : {contact.DateRDV}");
 //}
-#endregion
 
-#region 8. Tri combiné avec ThenBy et ThenByDescending
-////Consigne :
-////Triez les contacts par nom, puis par prénom dans l’ordre alphabétique. Affichez les résultats.
 
-//IEnumerable<Contact> contactsToOrder = contacts.OrderBy(c => c.Nom).ThenBy(c => c.Prenom);
+//Console.WriteLine("----------Group Join----------");
 
-//foreach( Contact contact in contactsToOrder)
+//var resultGroupJoin = contacts.GroupJoin(rendezVous,
+//                                         c => c.Email,
+//                                         rdv => rdv.Email,
+//                                         (c, rdvs) => new
+//                                         {
+//                                             c.Nom,
+//                                             c.Prenom,
+//                                             c.Email,
+//                                             RendezVous = rdvs
+
+//                                         });
+
+//foreach(var contact in resultGroupJoin)
 //{
-//    Console.WriteLine(contact.ToString());
-//}
-#endregion
+//    Console.WriteLine($"{contact.Nom} {contact.Prenom} - { contact.Email} :");
+//    if (contact.RendezVous.Count() > 0)
+//    {
+//        foreach (RDV rdv in contact.RendezVous)
+//        {
+//            Console.WriteLine(rdv.Date);
+//        }
+//    }
+//    else
+//    {
+//        Console.WriteLine("Aucun RDV");
 
+//    }
+
+//    Console.WriteLine();
+//}
 #endregion
